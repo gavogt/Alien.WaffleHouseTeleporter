@@ -1,10 +1,45 @@
 ﻿@page
-@model IndexModel
+@model WaffleHouseTeleporter.Pages.IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Waffle House Teleporter";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="teleporter-hero">
+    <div class="teleporter-overlay"></div>
+    <div class="container position-relative z-1">
+        <div class="row justify-content-center">
+            <div class="col-xl-8">
+                <div class="teleporter-panel text-center">
+                    <div class="eyebrow">INTERDIMENSIONAL BREAKFAST GATEWAY</div>
+                    <h1 class="display-4 fw-bold mb-3">Waffle House Teleporter</h1>
+                    <p class="lead text-light-emphasis mb-4">
+                        Enter a ZIP code and phase directly into the nearest Waffle House using .NET, coordinates, and reckless optimism.
+                    </p>
+
+                    <form method="post" class="row g-3 justify-content-center">
+                        <div asp-validation-summary="ModelOnly" class="text-warning small"></div>
+
+                        <div class="col-md-6">
+                            <input asp-for="ZipCode" class="form-control form-control-lg teleporter-input" placeholder="85281" />
+                        </div>
+                        <div class="col-md-auto">
+                            <button type="submit" class="btn btn-success btn-lg teleporter-btn">
+                                Initiate Teleport
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="teleporter-stats mt-4">
+                        <span>Syrup matrix stabilized</span>
+                        <span>Hashbrown coordinates locked</span>
+                        <span>Waffle beacon aligned</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

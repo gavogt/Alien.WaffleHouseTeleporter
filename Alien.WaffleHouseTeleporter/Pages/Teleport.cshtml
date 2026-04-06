@@ -1,0 +1,84 @@
+﻿@page
+@model Alien.WaffleHouseTeleporter.Pages.TeleportModel
+@{
+    ViewData["Title"] = "Teleport";
+}
+
+<div class="container py-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <div class="eyebrow">PORTAL DESTINATION LOCKED</div>
+            <h1 class="h2 mb-1">Nearby Waffle Houses for @Model.Zip</h1>
+            <p class="text-secondary mb-0">Search center: @Model.SearchCenterLabel</p>
+        </div>
+        <a class="btn btn-outline-light" asp-page="/Index">Change ZIP</a>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-warning rounded-4 shadow-sm">
+            @Model.ErrorMessage
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="teleporter-panel h-100">
+                    <h2 class="h5 mb-3">Choose your breakfast destination</h2>
+
+                    <div class="d-grid gap-3">
+                        @foreach (var location in Model.Locations)
+                        {
+                            var isSelected = Model.SelectedLocation?.PlaceId == location.PlaceId;
+
+                            <a asp-page="/Teleport"
+                                   asp-route-zip="@Model.Zip"
+                                   asp-route-placeId="@location.PlaceId"
+                                   class="teleport-card @(isSelected ? "selected" : string.Empty)">
+                                <div class="d-flex justify-content-between align-items-start gap-3">
+                                    <div>
+                                        <div class="fw-semibold">@location.Name</div>
+                                        <div class="small text-secondary">@location.Address</div>
+                                    </div>
+                                    <span class="badge text-bg-success rounded-pill">
+                                        @location.DistanceMiles.ToString("0.0") mi
+                                    </span>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                @if (Model.SelectedLocation is not null && !string.IsNullOrWhiteSpace(Model.StreetViewUrl))
+                {
+                    <div class="teleporter-panel mb-3">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                            <div>
+                                <h2 class="h5 mb-1">Teleport view</h2>
+                                <div class="text-secondary small">@Model.SelectedLocation.Name · @Model.SelectedLocation.Address</div>
+                            </div>
+                            <span class="badge text-bg-dark border border-success-subtle">Portal open</span>
+                        </div>
+
+                        <div class="teleport-sequence mb-3">
+                            <span>Locking coordinates</span>
+                            <span>Aligning syrup matrix</span>
+                            <span>Opening portal</span>
+                        </div>
+
+                        <div class="ratio ratio-16x9 rounded-4 overflow-hidden teleporter-frame">
+                            <iframe src="@Model.StreetViewUrl"
+                                    allowfullscreen
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
