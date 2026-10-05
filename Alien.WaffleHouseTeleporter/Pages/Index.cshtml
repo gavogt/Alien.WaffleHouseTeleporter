@@ -1,45 +1,41 @@
-﻿@page
-@model WaffleHouseTeleporter.Pages.IndexModel
-@{
-    ViewData["Title"] = "Waffle House Teleporter";
-}
-
+@page
+@model Alien.WaffleHouseTeleporter.Pages.IndexModel
+@{ ViewData["Title"] = "Waffle House Teleporter"; }
 <section class="teleporter-hero">
     <div class="teleporter-overlay"></div>
-    <div class="container position-relative z-1">
-        <div class="row justify-content-center">
-            <div class="col-xl-8">
-                <div class="teleporter-panel text-center">
-                    <div class="eyebrow">INTERDIMENSIONAL BREAKFAST GATEWAY</div>
-                    <h1 class="display-4 fw-bold mb-3">Waffle House Teleporter</h1>
-                    <p class="lead text-light-emphasis mb-4">
-                        Enter a ZIP code and phase directly into the nearest Waffle House using .NET, coordinates, and reckless optimism.
-                    </p>
-
-                    <form method="post" class="row g-3 justify-content-center">
-                        <div asp-validation-summary="ModelOnly" class="text-warning small"></div>
-
-                        <div class="col-md-6">
-                            <input asp-for="ZipCode" class="form-control form-control-lg teleporter-input" placeholder="85281" />
-                        </div>
-                        <div class="col-md-auto">
-                            <button type="submit" class="btn btn-success btn-lg teleporter-btn">
-                                Initiate Teleport
-                            </button>
-                        </div>
-                    </form>
-
-                    <div class="teleporter-stats mt-4">
-                        <span>Syrup matrix stabilized</span>
-                        <span>Hashbrown coordinates locked</span>
-                        <span>Waffle beacon aligned</span>
-                    </div>
-                </div>
+    <div class="container portal-container">
+        <div class="teleporter-panel text-center">
+            <div class="eyebrow">EARTH'S MOST IMPORTANT SPACE PROGRAM</div>
+            <div class="portal-art" aria-hidden="true"><div class="waffle"></div></div>
+            <h1 class="display-4 fw-bold">Waffle House<br /><span class="syrup-text">Teleporter</span></h1>
+            <p class="lead mt-3">Somewhere out there, the hashbrowns are calling.</p>
+            <p>One button. A random Waffle House. A whole new breakfast dimension.</p>
+            <form action="/Teleport" method="get" target="@(Model.HasEmbed ? "_self" : "_blank")"
+                  data-teleport-form data-inline="@Model.HasEmbed.ToString().ToLowerInvariant()">
+                <input type="hidden" name="handler" value="Launch" />
+                <input type="hidden" name="exclude" value="" />
+                <button class="btn btn-success btn-lg teleporter-btn mt-3" type="submit">Teleport me ↗</button>
+            </form>
+            <p class="small mt-3">@(Model.HasEmbed ? "Your portal opens right here." : "Street View opens in a new tab. Come back for another jump.")</p>
+            <div class="teleporter-stats mt-4">
+                <span>@Model.LocationCount.ToString("N0") breakfast beacons</span>
+                <span>No ZIP code required</span>
+                <span>Syrup matrix: stable</span>
             </div>
+            <p id="portal-status" class="mt-4 mb-0" role="status" aria-live="polite">Ready when you are, traveler.</p>
         </div>
+        <section id="destination" class="teleporter-panel mt-4" hidden aria-labelledby="destination-title">
+            <div class="eyebrow">DESTINATION LOCKED</div>
+            <h2 id="destination-title" class="h3">Waffle House</h2>
+            <p id="destination-address"></p>
+            <p id="destination-coordinates" class="small"></p>
+            <div class="d-flex flex-wrap gap-2">
+                <a id="street-view-link" class="btn btn-success" target="_blank" rel="noopener noreferrer">Open Street View ↗</a>
+                <a id="maps-link" class="btn btn-outline-light" target="_blank" rel="noopener noreferrer">Find this Waffle House ↗</a>
+                <a id="details-link" class="btn btn-outline-light">Destination page</a>
+            </div>
+            <div id="inline-view" class="ratio ratio-16x9 teleporter-frame mt-4" hidden></div>
+            <p class="small mt-3 mb-0">Street View may land on the nearby road. If imagery is missing, use the map or teleport again. Locations come from a community catalog; some may have changed.</p>
+        </section>
     </div>
 </section>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

@@ -1,11 +1,11 @@
-﻿using Alien.WaffleHouseTeleporter.Models;
-using Alien.WaffleHouseTeleporter.Options;
-using Microsoft.Extensions.Options;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Net;
 using System.Text.Json;
+using Microsoft.Extensions.Options;
+using Alien.WaffleHouseTeleporter.Models;
+using Alien.WaffleHouseTeleporter.Options;
 
-namespace WaffleHouseTeleporter.Services;
+namespace Alien.WaffleHouseTeleporter.Services;
 
 public sealed class GoogleMapsService
 {

@@ -1,68 +1,29 @@
-﻿using Alien.WaffleHouseTeleporter.Models;
+using Alien.WaffleHouseTeleporter.Models;
+using Alien.WaffleHouseTeleporter.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WaffleHouseTeleporter.Services;
-
 namespace Alien.WaffleHouseTeleporter.Pages;
-
-public class TeleportModel : PageModel
+[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+public class TeleportModel(TeleporterService teleporter) : PageModel
 {
-    private readonly GoogleMapsService _googleMapsService;
-
-    public TeleportModel(GoogleMapsService googleMapsService)
+    public PortalDestination SelectedLocation { get; private set; } = null!;
+    public string StreetViewUrl => teleporter.StreetViewUrl(SelectedLocation);
+    public string MapsUrl => teleporter.MapsUrl(SelectedLocation);
+    public string? EmbedUrl => teleporter.EmbedUrl(SelectedLocation);
+    public IActionResult OnGet(string? id, string? exclude)
     {
-        _googleMapsService = googleMapsService;
-    }
-
-    [BindProperty(SupportsGet = true)]
-    public string Zip { get; set; } = string.Empty;
-
-    [BindProperty(SupportsGet = true)]
-    public string? PlaceId { get; set; }
-
-    public string SearchCenterLabel { get; set; } = string.Empty;
-    public List<WaffleHouseLocation> Locations { get; set; } = new();
-    public WaffleHouseLocation? SelectedLocation { get; set; }
-    public string? StreetViewUrl { get; set; }
-    public string? ErrorMessage { get; set; }
-
-    public async Task<IActionResult> OnGetAsync(CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrWhiteSpace(Zip))
-        {
-            return RedirectToPage("/Index");
-        }
-
-        var coordinates = await _googleMapsService.GeocodeZipAsync(Zip, cancellationToken);
-        if (coordinates is null)
-        {
-            ErrorMessage = "Unable to resolve that ZIP code. The teleporter lost the breadcrumb trail.";
-            return Page();
-        }
-
-        SearchCenterLabel = coordinates.FormattedAddress;
-        Locations = await _googleMapsService.FindNearbyWaffleHousesAsync(
-            coordinates.Latitude,
-            coordinates.Longitude,
-            cancellationToken);
-
-        if (Locations.Count == 0)
-        {
-            ErrorMessage = "No Waffle House signal detected in this region.";
-            return Page();
-        }
-
-        SelectedLocation = !string.IsNullOrWhiteSpace(PlaceId)
-            ? Locations.FirstOrDefault(x => x.PlaceId == PlaceId)
-            : Locations.First();
-
-        if (SelectedLocation is not null)
-        {
-            StreetViewUrl = _googleMapsService.BuildStreetViewEmbedUrl(
-                SelectedLocation.Latitude,
-                SelectedLocation.Longitude);
-        }
-
+        var destination = id is null ? teleporter.Pick(exclude) : teleporter.Find(id);
+        if (destination is null) return NotFound();
+        SelectedLocation = destination;
         return Page();
+    }
+    public IActionResult OnGetRandom(string? exclude) =>
+        new JsonResult(teleporter.Describe(teleporter.Pick(exclude)));
+    public IActionResult OnGetLaunch(string? exclude)
+    {
+        var destination = teleporter.Pick(exclude);
+        return teleporter.HasEmbed
+            ? RedirectToPage("/Teleport", new { id = destination.Id })
+            : Redirect(teleporter.StreetViewUrl(destination));
     }
 }

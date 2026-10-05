@@ -1,8 +1,10 @@
-﻿@page
+@page
 @model PrivacyModel
-@{
-    ViewData["Title"] = "Privacy Policy";
-}
-<h1>@ViewData["Title"]</h1>
-
-<p>Use this page to detail your site's privacy policy.</p>
+@{ ViewData["Title"] = "About & privacy"; }
+<section class="container portal-container py-5"><div class="teleporter-panel">
+    <h1>About this breakfast portal</h1>
+    <p>This unofficial fan project picks a random Waffle House from a bundled OpenStreetMap catalog. It is not affiliated with Waffle House.</p>
+    <p>No account, ZIP code, or device location is needed. The app does not add analytics or tracking cookies. Hosting servers may keep ordinary request logs.</p>
+    <p>Entering Street View or opening a map sends you to Google Maps, which has its own privacy policy. If an embedded viewer is configured, your browser contacts Google when you teleport.</p>
+    <p>Location data is © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, available under the <a href="https://opendatacommons.org/licenses/odbl/1-0/">Open Database License (ODbL)</a>. The catalog may not include every restaurant or reflect recent closures.</p>
+</div></section>
